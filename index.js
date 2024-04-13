@@ -28,6 +28,9 @@ const exerciseSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  username:{
+    type: String
+  },
   description:{
     type: String,
     required: true
@@ -37,7 +40,8 @@ const exerciseSchema = new mongoose.Schema({
     required: true
   },
   date:{
-    type: Date
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -53,7 +57,7 @@ app.post("/api/users", async function(req, res, next){
     res.json(user);
   }
   catch(err){
-    console.error(err);
+    console.error(err);33
   };
   next();
 });
@@ -69,6 +73,7 @@ app.post("/api/users/:_id/exercises",async function(req,res,next){
     {
       const newExercise = new Exercise({
         user_id:user._id ,
+        username: user.username,
         description: req.body.description,
         duration: req.body.duration,
         date: req.body.date? new Date(req.body.date).toDateString() : new Date().toDateString()
