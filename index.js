@@ -17,11 +17,11 @@ mongoose.connect(process.env.DB_URL,{useNewUrlParser: true, useUnifiedTopology:t
 const userSchema = new mongoose.Schema({
   username:{
     type: String, 
-    required: true
+    // required: true
   }
 });
 
-const User = mongoose.model("User", userSchema);
+let User = mongoose.model("User", userSchema);
 
 const exerciseSchema = new mongoose.Schema({
   user_id:{
@@ -30,38 +30,20 @@ const exerciseSchema = new mongoose.Schema({
   },
   description:{
     type: String,
-    // required: true
+    required: true
   },
   duration:{
     type: Number,
-    // required: true
+    required: true
   },
-  date:{
-    type: Date,
-    default: Date.now
-  }
+  date: String
+  // {
+  //   type: Date,
+  //   default: Date.now
+  // }
 });
 
-const Exercise= mongoose.model("Exercise", exerciseSchema);
-
-
-const createNewUser= async (username) =>{
-  try{
-  const newUser = new User({
-    username: username
-  });
-  await newUser.save( 
-    // function(err, data){
-    // if(err) return console.error(err);
-    // done(null, data);
-    // }
-  );
-  return newUser;
-  }
-  catch(err){
-    console.error(err);
-  };
-}
+let Exercise= mongoose.model("Exercise", exerciseSchema);
 
 const addExercises =async (_id, description, duration, date) =>{
   try{
@@ -96,8 +78,16 @@ const addExercises =async (_id, description, duration, date) =>{
 };
 
 app.post("/api/users", async function(req, res, next){
-  const newUser = await createNewUser(req.body.username);
-  res.json(newUser);
+  try{
+    const userObj = new User({
+      username: req.body.username
+    });
+    const user = await userObj.save();
+    res.json(user);
+  }
+  catch(err){
+    console.error(err);33
+  };
   next();
 });
 
@@ -121,8 +111,10 @@ app.get("/api/users", async function(req, res,next){
 })
 
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/index.html')
+app.get('/', async (req, res) => {
+  res.sendFile(__dirname + '/views/index.html');
+  await User.syncIndexes();
+  await Exercise.syncIndexes();
 });
 
 
