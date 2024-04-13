@@ -63,6 +63,15 @@ app.post("/api/users", async function(req, res, next){
 
 app.post("/api/users/:_id/exercises",async function(req,res,next){
   try{
+    const userId = req.params._id;
+    const description = req.body.description;
+    const duration= req.body.duration;
+    const date = req.body.date;
+    if(!date)
+    {
+      date = new Date().toDateString();
+    }
+
     const user= await User.findById(req.params._id);
     if(!user)
     {
@@ -71,11 +80,11 @@ app.post("/api/users/:_id/exercises",async function(req,res,next){
     else
     {
       const newExercise = new Exercise({
-        user_id:user._id ,
+        user_id:userId ,
         username: user.username,
-        description: req.body.description,
-        duration: req.body.duration,
-        date: req.body.date? new Date(req.body.date).toDateString() : new Date().toDateString()
+        description: description,
+        duration: duration,
+        date: date
       });
     
       const exercise= await newExercise.save();
