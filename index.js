@@ -45,37 +45,6 @@ const exerciseSchema = new mongoose.Schema({
 
 let Exercise= mongoose.model("Exercise", exerciseSchema);
 
-const addExercises =async (_id, description, duration, date) =>{
-  try{
-    const user= await User.findById(_id);
-    if(!user)
-    {
-      console.log("Could Not Find User");
-    }
-    else
-    {
-      const newExercise = new Exercise({
-        user_id: user._id,
-        description: description,
-        duration: duration,
-        date: new Date(date).toDateString()
-      });
-    
-      const exercise= await newExercise.save( 
-        // function(err, data){
-        // if(err) return console.error(err);
-        // done(null, data);
-        // }
-      );
-      return exercise;
-    }
-  }
-  catch(err){
-    console.error(err);
-  }
-
-
-};
 
 app.post("/api/users", async function(req, res, next){
   try{
@@ -92,8 +61,28 @@ app.post("/api/users", async function(req, res, next){
 });
 
 app.post("/api/users/:_id/exercises",async function(req,res,next){
-  const newExercise =await addExercises(req.params._id, req.body.description, req.body.duration, req.body.date);
-  res.json(newExercise);
+  try{
+    const user= await User.findById(req.params._id);
+    if(!user)
+    {
+      console.log("Could Not Find User");
+    }
+    else
+    {
+      const newExercise = new Exercise({
+        user_id:user._id ,
+        description: req.body.description,
+        duration: req.body.duration,
+        date: new Date(req.body.date).toDateString()
+      });
+    
+      const exercise= await newExercise.save();
+      res.json(exercise);
+    }
+  }
+  catch(err){
+    console.error(err);
+  }
   next();
 })
 
