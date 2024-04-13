@@ -36,11 +36,10 @@ const exerciseSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  date: String
-  // {
-  //   type: Date,
-  //   default: Date.now
-  // }
+  date:{
+    type: Date,
+    default: Date.now
+  }
 });
 
 let Exercise= mongoose.model("Exercise", exerciseSchema);
