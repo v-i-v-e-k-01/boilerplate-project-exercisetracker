@@ -86,9 +86,15 @@ app.post("/api/users/:_id/exercises",async function(req,res,next){
         duration: duration,
         date: date
       });
-    
-      const exercise= await newExercise.save();
-      res.json(exercise);
+    await newExercise.save();
+
+    res.json({
+      username: newExercise.username,
+      description: newExercise.description,
+      duration: newExercise.duration,
+      date: newExercise.date,
+      _id: newExercise.user_id
+    });
     }
   }
   catch(err){
