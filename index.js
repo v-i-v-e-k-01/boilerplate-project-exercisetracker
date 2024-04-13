@@ -53,7 +53,7 @@ app.post("/api/users", async function(req, res, next){
     res.json(user);
   }
   catch(err){
-    console.error(err);33
+    console.error(err);
   };
   next();
 });
