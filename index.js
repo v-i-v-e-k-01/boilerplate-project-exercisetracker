@@ -139,11 +139,12 @@ app.get("/api/users/:_id/logs", async (req, res, next)=>{
 
       for(let i=0; i<exerciseArray.length; i++)
       {
-        Log.log.push({
+        const exercise = {
           description: exerciseArray[i].description,
           duration: exerciseArray[i].duration,
           date: exerciseArray[i].date.toDateString()
-        });
+        };
+        Log.log.push(exercise);
       }
       res.json(Log);
     }
