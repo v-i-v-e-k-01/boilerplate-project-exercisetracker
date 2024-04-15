@@ -17,7 +17,7 @@ mongoose.connect(process.env.DB_URL,{useNewUrlParser: true, useUnifiedTopology:t
 const userSchema = new mongoose.Schema({
   username:{
     type: String, 
-    // required: true
+    required: true
   }
 });
 
@@ -56,10 +56,24 @@ app.post("/api/users", async function(req, res, next){
     res.json(user);
   }
   catch(err){
-    console.error(err);33
+    console.error(err);
   };
   next();
 });
+
+app.get("/api/users", async function(req, res,next){
+  const users = await User.find({}.select("_id username"));
+  if(!users)
+  {
+    res.send("No Users");
+  }
+  else
+  {
+    res.json(users);
+  }
+  next();
+})
+
 
 app.post("/api/users/:_id/exercises",async function(req,res,next){
   try{
@@ -105,18 +119,7 @@ app.post("/api/users/:_id/exercises",async function(req,res,next){
   next();
 })
 
-app.get("/api/users", async function(req, res,next){
-  const users = await User.find({}.select("_id username"));
-  if(!users)
-  {
-    res.send("No Users");
-  }
-  else
-  {
-    res.json(users);
-  }
-  next();
-})
+
 
 
 app.get('/', async (req, res) => {
@@ -132,3 +135,21 @@ app.get('/', async (req, res) => {
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
+// const express = require('express')
+// const app = express()
+// const cors = require('cors')
+// require('dotenv').config()
+
+// app.use(cors())
+// app.use(express.static('public'))
+// app.get('/', (req, res) => {
+//   res.sendFile(__dirname + '/views/index.html')
+// });
+
+
+
+
+
+// const listener = app.listen(process.env.PORT || 3000, () => {
+//   console.log('Your app is listening on port ' + listener.address().port)
+// })
