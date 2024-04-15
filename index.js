@@ -131,9 +131,9 @@ app.get("/api/users/:_id/logs", async (req, res, next)=>{
     else{
       const exerciseArray = await Exercise.find({user_id: req.params._id });
       const Log = {
+        _id: user._id,
         username: user.username,
         count: exerciseArray.length,
-        _id: user._id,
         log:[]
       }
 
