@@ -77,7 +77,7 @@ app.get("/api/users", async function(req, res,next){
 
 app.post("/api/users/:_id/exercises",async function(req,res,next){
   try{
-    const userId = req.params._id;
+    // const userId = req.params._id;
     const description = req.body.description;
     const duration= req.body.duration;
     var date = req.body.date.substring(0,10);
@@ -117,7 +117,42 @@ app.post("/api/users/:_id/exercises",async function(req,res,next){
     console.error(err);
   }
   next();
-})
+});
+
+app.get("/api/users/:_id/logs", async (req, res, next)=>{
+  try{
+    const user = await User.findById(req.params._id);
+    if(!user)
+    {
+      res.json({
+        error: "No User Found"
+      })
+    }
+    else{
+      const exerciseArray = await Exercise.find({user_id: req.params._id });
+      const Log = {
+        username: user.username,
+        count: exerciseArray.length,
+        _id: user._id,
+        log:[]
+      }
+
+      for(let i=0; i<exerciseArray.length; i++)
+      {
+        Log.log.push({
+          description: exerciseArray[i].description,
+          duration: exerciseArray[i].duration,
+          date: exerciseArray[i].date.toDateString()
+        });
+      }
+      res.json(Log);
+    }
+  }
+  catch(err){
+    console.error(err);
+  };
+  next();
+});
 
 
 
