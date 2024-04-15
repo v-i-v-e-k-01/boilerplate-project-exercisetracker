@@ -62,7 +62,7 @@ app.post("/api/users", async function(req, res, next){
 });
 
 app.get("/api/users", async function(req, res,next){
-  const users = await User.find({}.select("_id username"));
+  const users = await User.find({});
   if(!users)
   {
     res.send("No Users");
