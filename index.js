@@ -136,23 +136,34 @@ app.get("/api/users/:_id/logs", async (req, res, next)=>{
         user_id: user._id,
         date: { $gte: from, $lte: to },
       }).select('description duration date').limit(limit).exec();
-      // const exerciseArray = await Exercise.find({user_id: req.params._id });
+      // // const exerciseArray = await Exercise.find({user_id: req.params._id });
+
+
+      let parsedDatesLog = exerciseArray.map((exercise) => {
+        return {
+          description: exercise.description,
+          duration: exercise.duration,
+          date: new Date(exercise.date).toDateString(),
+        };
+      });
+
       const Log = {
         _id: user._id,
         username: user.username,
         count: exerciseArray.length,
-        log:[]
+        log:parsedDatesLog
       }
 
-      for(let i=0; i<exerciseArray.length; i++)
-      {
-        const exercise = {
-          description: exerciseArray[i].description,
-          duration: exerciseArray[i].duration,
-          date: exerciseArray[i].date.toDateString()
-        };
-        Log.log.push(exercise);
-      }
+
+      // for(let i=0; i<exerciseArray.length; i++)
+      // {
+      //   const exercise = {
+      //     description: exerciseArray[i].description,
+      //     duration: exerciseArray[i].duration,
+      //     date: exerciseArray[i].date.toDateString()
+      //   };
+      //   Log.log.push(exercise);
+      // }
       res.json(Log);
     }
   }
