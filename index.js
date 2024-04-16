@@ -80,7 +80,7 @@ app.post("/api/users/:_id/exercises",async function(req,res,next){
     // const userId = req.params._id;
     const description = req.body.description;
     const duration= req.body.duration;
-    var date = req.body.date.substring(0,10);
+    var date = req.body.date.toDateString();
     if(!date)
     {
       date = new Date().toDateString();
@@ -108,7 +108,7 @@ app.post("/api/users/:_id/exercises",async function(req,res,next){
       username: newExercise.username,
       description: newExercise.description,
       duration: newExercise.duration,
-      date: newExercise.date.toDateString(),
+      date: newExercise.date,
       _id: newExercise.user_id
     });
     }
@@ -122,8 +122,8 @@ app.post("/api/users/:_id/exercises",async function(req,res,next){
 app.get("/api/users/:_id/logs", async (req, res, next)=>{
   try{
     const user = await User.findById(req.params._id);
-    const from = new Date(req.query.from) || new Date(0);
-    const to = new Date( req.query.from)  || new Date();
+    const from = new Date(req.query.from).toDateString() || new Date(0).toDateString();
+    const to = new Date( req.query.from).toDateString()  || new Date().toDateString();
     const limit = Number(req.query.limit) || 0;
     if(!user)
     {
@@ -137,23 +137,21 @@ app.get("/api/users/:_id/logs", async (req, res, next)=>{
         date: { $gte: from, $lte: to },
       }).select('description duration date').limit(limit).exec();
       // const exerciseArray = await Exercise.find({user_id: req.params._id });
-      const Log = {
+      
+      let parsedDatesLog = exerciseArray.map((exercise)=>{
+        return {
+          description: exercise.description,
+          duration: exercise.duration,
+          date: new Date(exercise.date).toDateString()
+        }
+      })
+      
+      res.json({
         _id: user._id,
         username: user.username,
-        count: exerciseArray.length,
-        log:[]
-      }
-
-      for(let i=0; i<exerciseArray.length; i++)
-      {
-        const exercise = {
-          description: exerciseArray[i].description,
-          duration: exerciseArray[i].duration,
-          date: exerciseArray[i].date.toDateString()
-        };
-        Log.log.push(exercise);
-      }
-      res.json(Log);
+        count: parsedDatesLog.length,
+        log: parsedDatesLog,
+      });
     }
   }
   catch(err){
