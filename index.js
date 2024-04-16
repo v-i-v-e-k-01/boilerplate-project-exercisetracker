@@ -121,9 +121,10 @@ app.post("/api/users/:_id/exercises",async function(req,res,next){
 
 app.get("/api/users/:_id/logs", async (req, res, next)=>{
   try{
+
     const user = await User.findById(req.params._id);
     const from = new Date(req.query.from) || new Date(0);
-    const to = new Date( req.query.from)  || new Date();
+    const to = new Date( req.query.to)  || new Date();
     const limit = Number(req.query.limit) || 0;
     if(!user)
     {
