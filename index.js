@@ -80,10 +80,10 @@ app.post("/api/users/:_id/exercises",async function(req,res,next){
     // const userId = req.params._id;
     const description = req.body.description;
     const duration= req.body.duration;
-    var date = new Date(req.body.date).toDateString();
-    if(!date)
+    var date = new Date(req.body.date).toLocaleDateString();
+    if(!date || isNaN(new Date(date)))
     {
-      date = new Date().toDateString();
+      date = new Date().toLocaleDateString();
     }
 
     // date =date.substring(0,10);
@@ -123,8 +123,8 @@ app.get("/api/users/:_id/logs", async (req, res, next)=>{
   try{
 
     const user = await User.findById(req.params._id);
-    let from = req.query.from ? new Date(req.query.from) : new Date(0);
-    let to = req.query.to ? new Date(req.query.to) : new Date();
+    let from = req.query.from ? req.query.from : 0;
+    let to = req.query.to ? req.query.to : new Date().toLocaleDateString();
     let limit = req.query.limit ? Number(req.query.limit) : 0;
 
     if(!user)
