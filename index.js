@@ -123,9 +123,10 @@ app.get("/api/users/:_id/logs", async (req, res, next)=>{
   try{
 
     const user = await User.findById(req.params._id);
-    const from = new Date(req.query.from).toDateString() || new Date(0).toDateString();
-    const to = new Date( req.query.to).toDateString()  || new Date().toDateString();
-    const limit = Number(req.query.limit) || 0;
+    let from = req.query.from ? new Date(req.query.from).toDateString() : new Date(0).toDateString();
+    let to = req.query.to ? new Date(req.query.to).toDateString() : new Date().toDateString();
+    let limit = req.query.limit ? Number(req.query.limit) : 0;
+
     if(!user)
     {
       res.json({
@@ -133,12 +134,15 @@ app.get("/api/users/:_id/logs", async (req, res, next)=>{
       })
     }
     else{
-      let exerciseArray = await Exercise.find({
-        user_id: user._id,
-        date: { $gte:new Date(from).toDateString(), $lte:new Date(to).toDateString() },
-      }).select('description duration date').limit(limit).exec();
-      // // const exerciseArray = await Exercise.find({user_id: req.params._id });
+      let query = { user_id: user._id };
+      if (req.query.from && req.query.to) {
+        query.date = { $gte: new Date(from), $lte: new Date(to) };
+      }
 
+      let exerciseArray = await Exercise.find(query)
+        .select("description duration date")
+        .limit(limit)
+        .exec();
 
       let parsedDatesLog = exerciseArray.map((exercise) => {
         return {
