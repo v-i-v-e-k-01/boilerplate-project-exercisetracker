@@ -80,10 +80,10 @@ app.post("/api/users/:_id/exercises",async function(req,res,next){
     // const userId = req.params._id;
     const description = req.body.description;
     const duration= req.body.duration;
-    var date = req.body.date.substring(0,10);
+    var date = req.body.date;
     if(!date)
     {
-      date = new Date().toDateString();
+      date = new Date();
     }
 
     // date =date.substring(0,10);
