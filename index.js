@@ -123,8 +123,8 @@ app.get("/api/users/:_id/logs", async (req, res, next)=>{
   try{
 
     const user = await User.findById(req.params._id);
-    let from = req.query.from ? new Date(req.query.from).toDateString() : new Date(0).toDateString();
-    let to = req.query.to ? new Date(req.query.to).toDateString() : new Date().toDateString();
+    let from = req.query.from ? new Date(req.query.from) : new Date(0);
+    let to = req.query.to ? new Date(req.query.to) : new Date();
     let limit = req.query.limit ? Number(req.query.limit) : 0;
 
     if(!user)
