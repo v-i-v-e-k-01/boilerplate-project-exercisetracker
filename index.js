@@ -124,7 +124,7 @@ app.get("/api/users/:_id/logs", async (req, res, next)=>{
 
     const user = await User.findById(req.params._id);
     const from = new Date(req.query.from).toDateString() || new Date(0).toDateString();
-    const to = new Date( req.query.to).toDateString()  || new Date();
+    const to = new Date( req.query.to).toDateString()  || new Date().toDateString();
     const limit = Number(req.query.limit) || 0;
     if(!user)
     {
@@ -135,7 +135,7 @@ app.get("/api/users/:_id/logs", async (req, res, next)=>{
     else{
       let exerciseArray = await Exercise.find({
         user_id: user._id,
-        date: { $gte: from, $lte: to },
+        date: { $gte:new Date(from).toDateString(), $lte:new Date(to).toDateString() },
       }).select('description duration date').limit(limit).exec();
       // // const exerciseArray = await Exercise.find({user_id: req.params._id });
 
