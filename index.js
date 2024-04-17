@@ -80,10 +80,10 @@ app.post("/api/users/:_id/exercises",async function(req,res,next){
     // const userId = req.params._id;
     const description = req.body.description;
     const duration= req.body.duration;
-    var date = new Date(req.body.date);
+    var date = new Date(req.body.date).toDateString();
     if(!date)
     {
-      date = new Date();
+      date = new Date().toDateString();
     }
 
     // date =date.substring(0,10);
@@ -100,7 +100,7 @@ app.post("/api/users/:_id/exercises",async function(req,res,next){
         username: user.username,
         description: description,
         duration: duration,
-        date: date
+        date: new Date(date).toDateString()
       });
     await newExercise.save();
 
@@ -108,7 +108,7 @@ app.post("/api/users/:_id/exercises",async function(req,res,next){
       username: newExercise.username,
       description: newExercise.description,
       duration: newExercise.duration,
-      date: newExercise.date.toDateString(),
+      date: new Date(newExercise.date).toDateString(),
       _id: newExercise.user_id
     });
     }
@@ -123,8 +123,8 @@ app.get("/api/users/:_id/logs", async (req, res, next)=>{
   try{
 
     const user = await User.findById(req.params._id);
-    const from = new Date(req.query.from) || new Date(0);
-    const to = new Date( req.query.to)  || new Date();
+    const from = new Date(req.query.from).toDateString() || new Date(0).toDateString();
+    const to = new Date( req.query.to).toDateString()  || new Date();
     const limit = Number(req.query.limit) || 0;
     if(!user)
     {
